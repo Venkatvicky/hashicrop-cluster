@@ -12,6 +12,8 @@ spec:
       labels:
         app: vault
     spec:
+      securityContext:
+        fsGroup: 1000  # Ensures group ownership permissions
       containers:
         - name: vault
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -28,6 +30,10 @@ spec:
               value: "{{ .Values.postgresql.env.POSTGRES_PASSWORD }}"
             - name: VAULT_STORAGE_POSTGRES_DATABASE
               value: "{{ .Values.postgresql.env.POSTGRES_DB }}"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: false  # Ensure root filesystem is writable
           volumeMounts:
             - name: config
               mountPath: /vault/config
