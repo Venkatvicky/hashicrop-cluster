@@ -31,7 +31,12 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /vault/config
+            - name: vault-data
+              mountPath: /vault/data
       volumes:
         - name: config
           configMap:
             name: vault-config
+        - name: vault-data
+          persistentVolumeClaim:
+            claimName: vault-pvc
