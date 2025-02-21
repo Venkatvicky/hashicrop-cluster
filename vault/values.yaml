@@ -1,0 +1,49 @@
+replicaCount: 1
+
+image:
+  repository: hashicorp/vault
+  tag: "1.13.3"
+  pullPolicy: IfNotPresent
+
+postgresql:
+  enabled: true
+  image:
+    repository: postgres
+    tag: "15"
+    pullPolicy: IfNotPresent
+  storage:
+    size: "5Gi"
+  env:
+    POSTGRES_USER: "vault"
+    POSTGRES_PASSWORD: "vaultpassword"
+    POSTGRES_DB: "vault"
+
+service:
+  type: ClusterIP
+  port: 8200
+  postgresqlPort: 5432
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+  hosts:
+    - host: vault.example.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+storage:
+  type: "raft"  # Use Raft for storage backend
+  path: "/vault/data"
+  size: "10Gi"
+
+server:
+  securityContext:
+    runAsUser: 0  # Run as root to allow chown
+    fsGroup: 1000
+    allowPrivilegeEscalation: true
+
+  extraEnvironmentVars:
+    VAULT_API_ADDR: "http://127.0.0.1:8200"
