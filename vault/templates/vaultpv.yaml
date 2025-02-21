@@ -8,6 +8,6 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual  # Must match PVC's storage class
+  storageClassName: manual  # Must match vault-pvc's storage class
   hostPath:
-    path: "/mnt/data/vault"  # Ensure this path exists on worker nodes
+    path: "/mnt/data/vault"  # Make sure this directory exists on worker nodes
